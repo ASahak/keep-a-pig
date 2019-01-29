@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="https://cdn.linearicons.com/free/1.0.0/icon-font.min.css">
+    <title>Keep a Pig</title>
+    <link rel="shortcut icon" href="./img/pigCount.png" type="/image/x-icon">
+    <link rel="stylesheet" href="./scss/style.css">
+</head>
+<body>
+    <div id="root"></div>
+    <script src="https://www.gstatic.com/firebasejs/5.8.1/firebase.js"></script>
+    <script>
+    // Initialize Firebase
+    var config = {
+        apiKey: "AIzaSyAhrCZigMpekSo3_O4O-svAX_KuMqrS1o8",
+        authDomain: "keep-a-pig.firebaseapp.com",
+        databaseURL: "https://keep-a-pig.firebaseio.com",
+        projectId: "keep-a-pig",
+        storageBucket: "keep-a-pig.appspot.com",
+        messagingSenderId: "1047621000292"
+    };
+    firebase.initializeApp(config);
+    </script>
+    <script src="./src/main.js"></script>
+</body>
+</html>
