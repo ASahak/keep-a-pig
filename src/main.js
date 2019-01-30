@@ -164,7 +164,7 @@ Pig.prototype = {
                 }
                 _update.pigs[id].hungryLevel = 100 - Number((Number((100/120).toFixed(1))* Number((Math.round((new Date().getTime()/1000)-elem.buyDate.seconds)/3600).toFixed(1))).toFixed(1));
                 _update.pigs[id].healty = _update.pigs[id].hungryLevel;
-                _update.pigs[id].weight = currectWeight + Math.ceil(Number((Math.round((new Date().getTime()/1000)-elem.buyDate.seconds)/3600).toFixed(1)/24));
+                _update.pigs[id].weight = (_update.pigs[ind].weight - currectWeight) + currectWeight + Math.floor(Number((Math.round((new Date().getTime()/1000)-elem.buyDate.seconds)/3600).toFixed(1)/24));
                 _update.pigs[id].price = Math.round((priceTime*(_update.pigs[id].weight)*10));
                 pig.db.collection('users').doc(docID)
                 .update(_update);
