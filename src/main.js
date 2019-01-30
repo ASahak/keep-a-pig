@@ -526,7 +526,7 @@ Pig.prototype = {
         pig.db.collection('users').doc(docData.id).get().then(function(query){
             _update = query.data()
             document.querySelector('.preloadMyFram').remove();
-            Array.prototype.map.call(_update.pigs, (elem, id)=>{
+            Array.prototype.map.call(_update.pigs, (elem, ind)=>{
                 let pigSort = null, priceTime = 1, currectWeight = 10;
                 if(elem.sort == "lower"){
                     priceTime*= 1;
@@ -540,10 +540,10 @@ Pig.prototype = {
                     priceTime*= 3;
                     pigSort = "bigPig.png";
                 }
-                _update.pigs[id].hungryLevel = 100 - Number((Number((100/120).toFixed(1))* Number((Math.round((new Date().getTime()/1000)-elem.buyDate.seconds)/3600).toFixed(1))).toFixed(1));
-                _update.pigs[id].healty = _update.pigs[id].hungryLevel;
-                _update.pigs[id].weight = currectWeight + Math.ceil(Number((Math.round((new Date().getTime()/1000)-elem.buyDate.seconds)/3600).toFixed(1)/24));
-                _update.pigs[id].price = Math.round((priceTime*(_update.pigs[id].weight)*10));
+                _update.pigs[ind].hungryLevel = 100 - Number((Number((100/120).toFixed(1))* Number((Math.round((new Date().getTime()/1000)-elem.buyDate.seconds)/3600).toFixed(1))).toFixed(1));
+                _update.pigs[ind].healty = _update.pigs[ind].hungryLevel;
+                _update.pigs[ind].weight = (_update.pigs[ind].weight - currectWeight) + currectWeight + Math.floor(Number((Math.round((new Date().getTime()/1000)-elem.buyDate.seconds)/3600).toFixed(1)/24));
+                _update.pigs[ind].price = Math.round((priceTime*(_update.pigs[ind].weight)*10));
                 pig.db.collection('users').doc(docData.id)
                 .update(_update);
                 _eachBadge = `
