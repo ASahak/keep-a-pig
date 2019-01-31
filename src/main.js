@@ -162,9 +162,13 @@ Pig.prototype = {
                     priceTime*= 3;
                     pigSort = "bigPig.png";
                 }
+                
                 _update.pigs[ind].hungryLevel = 100 - Number((Number((100/120).toFixed(1))* Number((Math.round((new Date().getTime()/1000)-elem.buyDate.seconds)/3600).toFixed(1))).toFixed(1));
                 _update.pigs[ind].healty = _update.pigs[ind].hungryLevel;
-                _update.pigs[ind].weight = (_update.pigs[ind].weight - currectWeight) + currectWeight + Math.floor(Number((Math.round((new Date().getTime()/1000)-elem.buyDate.seconds)/3600).toFixed(1)/24));
+                _update.pigs[ind].weight = (currectWeight + 
+                    Math.ceil(Number((Math.round((new Date().getTime()/1000)-elem.buyDate.seconds)/3600).toFixed(1)/24)) + 
+                    (_update.pigs[ind].weight - (currectWeight + 
+                        Math.ceil(Number((Math.round((new Date().getTime()/1000)-elem.buyDate.seconds)/3600).toFixed(1)/24)))));
                 _update.pigs[ind].price = Math.round((priceTime*(_update.pigs[ind].weight)*10));
                 pig.db.collection('users').doc(docID)
                 .update(_update);
@@ -542,7 +546,10 @@ Pig.prototype = {
                 }
                 _update.pigs[ind].hungryLevel = 100 - Number((Number((100/120).toFixed(1))* Number((Math.round((new Date().getTime()/1000)-elem.buyDate.seconds)/3600).toFixed(1))).toFixed(1));
                 _update.pigs[ind].healty = _update.pigs[ind].hungryLevel;
-                _update.pigs[ind].weight = (_update.pigs[ind].weight - currectWeight) + currectWeight + Math.floor(Number((Math.round((new Date().getTime()/1000)-elem.buyDate.seconds)/3600).toFixed(1)/24));
+                _update.pigs[ind].weight = (currectWeight + 
+                    Math.ceil(Number((Math.round((new Date().getTime()/1000)-elem.buyDate.seconds)/3600).toFixed(1)/24)) + 
+                    (_update.pigs[ind].weight - (currectWeight + 
+                        Math.ceil(Number((Math.round((new Date().getTime()/1000)-elem.buyDate.seconds)/3600).toFixed(1)/24)))));
                 _update.pigs[ind].price = Math.round((priceTime*(_update.pigs[ind].weight)*10));
                 pig.db.collection('users').doc(docData.id)
                 .update(_update);
