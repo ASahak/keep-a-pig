@@ -268,7 +268,7 @@ body {
   right: 0;
   display: flex;
   flex-wrap: wrap;
-  align-content: center;
+  align-content: baseline;
   justify-content: center;
 }
 #root .vilage img[data-size=medium] {
