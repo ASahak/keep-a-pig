@@ -30,6 +30,7 @@ Pig.prototype = {
     __intervalChanges:(DB)=>{
         DB.collection("users").get().then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
+                
                 let _update =null;
                 pig.db.collection('users').doc(doc.id).get().then(function(query){
                     _update = query.data()
@@ -62,7 +63,11 @@ Pig.prototype = {
                         }
                         _update.pigs[id].hungryLevel = 100 - Number((Number((100/120).toFixed(1))* Number((Math.round((new Date().getTime()/1000)-elem.buyDate.seconds)/3600).toFixed(1))).toFixed(1));
                         _update.pigs[id].healty = _update.pigs[id].hungryLevel;
-                        _update.pigs[id].weight = currectWeight + Math.ceil(Number((Math.round((new Date().getTime()/1000)-elem.buyDate.seconds)/3600).toFixed(1)/24));
+                        _update.pigs[id].weight = (currectWeight + 
+                            Math.ceil(Number((Math.round((new Date().getTime()/1000)-elem.buyDate.seconds)/3600).toFixed(1)/24)) + 
+                            (_update.pigs[id].weight - (currectWeight + 
+                                Math.ceil(Number((Math.round((new Date().getTime()/1000)-elem.buyDate.seconds)/3600).toFixed(1)/24)))));
+                        
                         _update.pigs[id].price = Math.round((priceTime*(_update.pigs[id].weight)*10)*_update.pigs[id].healty/100);
                         pig.db.collection('users').doc(doc.id)
                         .update(_update);
@@ -77,7 +82,7 @@ Pig.prototype = {
             document.querySelector('.vilage').remove()
         }
         pig.root.innerHTML += `
-            <div class="vilage"></div>
+        <div class="vilage"></div>
         `;
         DB.collection("users").get().then((querySnapshot) => {
             let genderPlace = '', index = -1;
@@ -108,6 +113,7 @@ Pig.prototype = {
                         document.querySelectorAll(`.fance`)[index].appendChild(img);
                     }
                     // setTimeout(()=>{
+                        
                         pig.__timeOutRadom(img, document.querySelectorAll(`.fance`)[index])
                     // }, 1000);
                 }
@@ -665,6 +671,7 @@ Pig.prototype = {
         document.querySelector('#createUser').onsubmit = (e) => {
             firebase.auth().createUserWithEmailAndPassword(document.forms["myForm"].email.value, document.forms["myForm"].password.value)
                 .then(function () {
+                    
                     DB.collection("users").add({
                         fullName: document.forms["myForm"].firstName.value,
                         login: document.forms["myForm"].email.value,
