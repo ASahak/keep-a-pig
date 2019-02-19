@@ -63,10 +63,11 @@ Pig.prototype = {
                         }
                         _update.pigs[id].hungryLevel = 100 - Number((Number((100/120).toFixed(1))* Number((Math.round((new Date().getTime()/1000)-elem.buyDate.seconds)/3600).toFixed(1))).toFixed(1));
                         _update.pigs[id].healty = _update.pigs[id].hungryLevel;
-                        _update.pigs[id].weight = (currectWeight + 
-                            Math.ceil(Number((Math.round((new Date().getTime()/1000)-elem.buyDate.seconds)/3600).toFixed(1)/24)) + 
-                            (_update.pigs[id].weight - (currectWeight + 
-                                Math.ceil(Number((Math.round((new Date().getTime()/1000)-elem.buyDate.seconds)/3600).toFixed(1)/24)))));
+                        _update.pigs[id].weight = _update.pigs[id].feed + Math.ceil(Number((Math.round((new Date().getTime()/1000)-elem.buyDate.seconds)/3600).toFixed(1)/24));
+                        // _update.pigs[id].weight = (currectWeight + 
+                        //     Math.ceil(Number((Math.round((new Date().getTime()/1000)-elem.buyDate.seconds)/3600).toFixed(1)/24)) + 
+                        //     (_update.pigs[id].weight - (currectWeight + 
+                        //         Math.ceil(Number((Math.round((new Date().getTime()/1000)-elem.buyDate.seconds)/3600).toFixed(1)/24)))));
                         
                         _update.pigs[id].price = Math.round((priceTime*(_update.pigs[id].weight)*10)*_update.pigs[id].healty/100);
                         pig.db.collection('users').doc(doc.id)
@@ -171,10 +172,7 @@ Pig.prototype = {
                 
                 _update.pigs[ind].hungryLevel = 100 - Number((Number((100/120).toFixed(1))* Number((Math.round((new Date().getTime()/1000)-elem.buyDate.seconds)/3600).toFixed(1))).toFixed(1));
                 _update.pigs[ind].healty = _update.pigs[ind].hungryLevel;
-                _update.pigs[ind].weight = (currectWeight + 
-                    Math.ceil(Number((Math.round((new Date().getTime()/1000)-elem.buyDate.seconds)/3600).toFixed(1)/24)) + 
-                    (_update.pigs[ind].weight - (currectWeight + 
-                        Math.ceil(Number((Math.round((new Date().getTime()/1000)-elem.buyDate.seconds)/3600).toFixed(1)/24)))));
+                _update.pigs[ind].weight = _update.pigs[ind].feed + Math.ceil(Number((Math.round((new Date().getTime()/1000)-elem.buyDate.seconds)/3600).toFixed(1)/24));
                 _update.pigs[ind].price = Math.round((priceTime*(_update.pigs[ind].weight)*10));
                 pig.db.collection('users').doc(docID)
                 .update(_update);
@@ -490,13 +488,13 @@ Pig.prototype = {
                         }
                         else{
                             if(elem.parentNode.children[0].getAttribute('data-price') == "100"){
-                                pigItem = { weight: 10, hungryLevel: 100, sort: "lower", buyDate:{seconds:Math.round((new Date().getTime()/1000))},healty: 100, price: 100 };
+                                pigItem = { feed: 10, weight: 10, hungryLevel: 100, sort: "lower", buyDate:{seconds:Math.round((new Date().getTime()/1000))},healty: 100, price: 100 };
                             }
                             else if(elem.parentNode.children[0].getAttribute('data-price') == "200"){
-                                pigItem = { weight: 10, hungryLevel: 100, sort: "medium", buyDate:{seconds:Math.round((new Date().getTime()/1000))},healty: 100, price: 200 };
+                                pigItem = { feed: 10, weight: 10, hungryLevel: 100, sort: "medium", buyDate:{seconds:Math.round((new Date().getTime()/1000))},healty: 100, price: 200 };
                             }
                             else if(elem.parentNode.children[0].getAttribute('data-price') == "300"){
-                                pigItem = { weight: 10, hungryLevel: 100, sort: "big", buyDate:{seconds:Math.round((new Date().getTime()/1000))},healty: 100, price: 300 };
+                                pigItem = { feed: 10, weight: 10, hungryLevel: 100, sort: "big", buyDate:{seconds:Math.round((new Date().getTime()/1000))},healty: 100, price: 300 };
                             }
                             for(let i =0; i< Number(elem.parentNode.children[0].value); i++){
                                 _update.pigs.push(pigItem)
@@ -552,10 +550,11 @@ Pig.prototype = {
                 }
                 _update.pigs[ind].hungryLevel = 100 - Number((Number((100/120).toFixed(1))* Number((Math.round((new Date().getTime()/1000)-elem.buyDate.seconds)/3600).toFixed(1))).toFixed(1));
                 _update.pigs[ind].healty = _update.pigs[ind].hungryLevel;
-                _update.pigs[ind].weight = (currectWeight + 
-                    Math.ceil(Number((Math.round((new Date().getTime()/1000)-elem.buyDate.seconds)/3600).toFixed(1)/24)) + 
-                    (_update.pigs[ind].weight - (currectWeight + 
-                        Math.ceil(Number((Math.round((new Date().getTime()/1000)-elem.buyDate.seconds)/3600).toFixed(1)/24)))));
+                _update.pigs[ind].weight = _update.pigs[ind].feed + Math.ceil(Number((Math.round((new Date().getTime()/1000)-elem.buyDate.seconds)/3600).toFixed(1)/24));
+                // _update.pigs[ind].weight = (currectWeight + 
+                //     Math.ceil(Number((Math.round((new Date().getTime()/1000)-elem.buyDate.seconds)/3600).toFixed(1)/24)) + 
+                //     (_update.pigs[ind].weight - (currectWeight + 
+                //         Math.ceil(Number((Math.round((new Date().getTime()/1000)-elem.buyDate.seconds)/3600).toFixed(1)/24)))));
                 _update.pigs[ind].price = Math.round((priceTime*(_update.pigs[ind].weight)*10));
                 pig.db.collection('users').doc(docData.id)
                 .update(_update);
@@ -603,6 +602,7 @@ Pig.prototype = {
                     _update.pigs[ind].healty = 100;
                     _update.pigs[ind].hungryLevel = 100;
                     _update.pigs[ind].buyDate.seconds = Math.round(new Date().getTime()/1000);
+                    _update.pigs[ind].feed = _update.pigs[ind].weight;
                     pig.db.collection('users').doc(docData.id)
                     .update(_update);
                     document.querySelectorAll('.healty .progress .active')[ind].style.width = _update.pigs[ind].healty+"%";
