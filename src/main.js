@@ -33,7 +33,7 @@ Pig.prototype = {
                 
                 let _update =null;
                 pig.db.collection('users').doc(doc.id).get().then(function(query){
-                    _update = query.data()
+                    _update = query.data();
                     if(_update.pigs.length > 10){
                         if(document.getElementById(doc.id).classList.contains('female')){
                             document.getElementById(doc.id).children[0].style.width = "80%"
@@ -43,11 +43,10 @@ Pig.prototype = {
                         }
                     }
                     Array.prototype.map.call(_update.pigs, (elem, id)=>{
-                        if(elem.healty < 0){
-                            _update.pigs.splice(id, 1);
-                            pig.db.collection('users').doc(doc.id)
-                            .update(_update);
-                        }
+                        // console.log(_update)
+                        _update.pigs[id].hungryLevel = 100 - Number((Number((100/120).toFixed(1))* Number((Math.round((new Date().getTime()/1000)-elem.buyDate.seconds)/3600).toFixed(1))).toFixed(1));
+                        _update.pigs[id].healty = _update.pigs[id].hungryLevel;
+                        _update.pigs[id].weight = _update.pigs[id].feed + Math.ceil(Number((Math.round((new Date().getTime()/1000)-elem.buyDate.seconds)/3600).toFixed(1)/24));
                         let pigSort = null, priceTime = 1, currectWeight = 10;
                         if(elem.sort == "lower"){
                             priceTime*= 1;
@@ -61,17 +60,21 @@ Pig.prototype = {
                             priceTime*= 3;
                             pigSort = "bigPig.png";
                         }
-                        _update.pigs[id].hungryLevel = 100 - Number((Number((100/120).toFixed(1))* Number((Math.round((new Date().getTime()/1000)-elem.buyDate.seconds)/3600).toFixed(1))).toFixed(1));
-                        _update.pigs[id].healty = _update.pigs[id].hungryLevel;
-                        _update.pigs[id].weight = _update.pigs[id].feed + Math.ceil(Number((Math.round((new Date().getTime()/1000)-elem.buyDate.seconds)/3600).toFixed(1)/24));
+                        _update.pigs[id].price = Math.round((priceTime*(_update.pigs[id].weight)*10)*_update.pigs[id].healty/100);
+                        pig.db.collection('users').doc(doc.id)
+                        .update(_update);
+                        if(elem.healty < 0){
+                            _update.pigs.splice(id, 1);
+                            pig.db.collection('users').doc(doc.id)
+                            .update(_update).then(()=>{
+                                document.querySelector('.pigCount').innerHTML = _update.pigs.length 
+                            });
+                        }
                         // _update.pigs[id].weight = (currectWeight + 
                         //     Math.ceil(Number((Math.round((new Date().getTime()/1000)-elem.buyDate.seconds)/3600).toFixed(1)/24)) + 
                         //     (_update.pigs[id].weight - (currectWeight + 
                         //         Math.ceil(Number((Math.round((new Date().getTime()/1000)-elem.buyDate.seconds)/3600).toFixed(1)/24)))));
                         
-                        _update.pigs[id].price = Math.round((priceTime*(_update.pigs[id].weight)*10)*_update.pigs[id].healty/100);
-                        pig.db.collection('users').doc(doc.id)
-                        .update(_update);
 
                     })
                 })
@@ -453,12 +456,12 @@ Pig.prototype = {
             }
         }
         pig.root.appendChild(_goShop);
-        Array.from(document.querySelectorAll('.add_prod_input')).forEach(elem=>{
-            elem.oninput = () =>{
-                _amount = 0;
-                let _update = null;
-                pig.db.collection('users').doc(docData.id).get().then(function(query){ 
-                    _update = query.data()
+        let _update = null;
+        pig.db.collection('users').doc(docData.id).get().then(function(query){ 
+            _update = query.data()
+            Array.from(document.querySelectorAll('.add_prod_input')).forEach(elem=>{
+                elem.oninput = () =>{
+                    _amount = 0;
                     Array.from(document.querySelectorAll('.add_prod_input')).forEach(elem=>{
                         _amount+=Number(elem.value)*elem.getAttribute('data-price')
                     })
@@ -468,8 +471,8 @@ Pig.prototype = {
                     else{
                         alert("You don't have enough money!!!")
                     }
-                })
-            }
+                }
+            })
         })
         Array.from(document.querySelectorAll('.addProduct')).forEach(elem=>{
             elem.onclick = () =>{
