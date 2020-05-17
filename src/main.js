@@ -4,6 +4,7 @@ function Pig(root) {
     this.storage = firebase.storage();
     this.storageRef = this.storage.ref();
     this.urlIMG = "";
+    this.allowIndividualFarmOpen = true;
     this._boolModal = false;
     this.__init.call(this)
 }
@@ -62,15 +63,16 @@ Pig.prototype = {
                         }
                         _update.pigs[id].price = Math.round((priceTime*(_update.pigs[id].weight)*10)*_update.pigs[id].healty/100);
                         pig.db.collection('users').doc(doc.id)
-                        .update(_update);
-                        if(elem.healty < 0){
-                            _update.pigs.splice(id, 1);
-                            pig.db.collection('users').doc(doc.id)
-                            .update(_update).then(()=>{
-                                document.querySelector('.pigCount').innerHTML = _update.pigs.length 
-                            });
-                        }
-                        // _update.pigs[id].weight = (currectWeight + 
+                        .update(_update).then(_ => {
+                            if(_update.pigs[id].hungryLevel < 0){
+                                _update.pigs.splice(id, 1);
+                                pig.db.collection('users').doc(doc.id)
+                                .update(_update).then(()=>{
+                                    document.querySelector('.pigCount').innerHTML = _update.pigs.length
+                                });
+                            }
+                        });
+                        // _update.pigs[id].weight = (currectWeight +
                         //     Math.ceil(Number((Math.round((new Date().getTime()/1000)-elem.buyDate.seconds)/3600).toFixed(1)/24)) + 
                         //     (_update.pigs[id].weight - (currectWeight + 
                         //         Math.ceil(Number((Math.round((new Date().getTime()/1000)-elem.buyDate.seconds)/3600).toFixed(1)/24)))));
@@ -122,21 +124,27 @@ Pig.prototype = {
                     // }, 1000);
                 }
                 genderBlock.onclick = function(){
-                    let _update = null;
-                    let id = this.getAttribute("id");
-                    pig.db.collection('users').doc(this.getAttribute("id")).get().then((query)=>_update = query.data()).then(function(){
-                        pig.__individualFarm(id)
-                        document.onclick = (e)=>{
-                            if (e.target.closest('.individual') && !e.target.closest('.indivChild')) {
-                                if(document.querySelector('.individual')){
-                                    document.querySelector('.individual').remove()
-                                }
-                            }
-                        }
-                    })
+                    removeEventListener('click', pig.__closeFarm.bind(this));
+                    if (pig.allowIndividualFarmOpen) {
+                        let _update = null;
+                        let id = this.getAttribute("id");
+                        pig.db.collection('users').doc(this.getAttribute("id")).get().then((query)=>_update = query.data()).then(function(){
+                            pig.__individualFarm(id);
+                            addEventListener('click', pig.__closeFarm.bind(this));
+                        })
+                    }
+                    pig.allowIndividualFarmOpen = false;
                 }
             });
         });
+    },
+    __closeFarm: (e) => {
+        if ((e.target.closest('.individual') || e.target.closest('.navBar')) && !e.target.closest('.indivChild')) {
+            if(document.querySelector('.individual')){
+                pig.allowIndividualFarmOpen = true;
+                document.querySelector('.individual').remove()
+            }
+        }
     },
     __individualFarm:(docID)=>{
         let _indiv = document.createElement("div");
@@ -149,7 +157,7 @@ Pig.prototype = {
         let _update = null; 
         pig.db.collection('users').doc(docID).get().then(function(query){
             _update = query.data()
-            document.querySelector('.preloadMyFram').remove();
+            document.querySelector('.preloadMyFram')?.remove();
             let user = document.createElement('div'),
                 avatar = (_update.avatar == "")?"./img/default.png":_update.avatar;
             user.className = "userBadge";
@@ -158,6 +166,7 @@ Pig.prototype = {
                 <span>${_update.fullName}</span>
             `
             _indivChild.appendChild(user);
+            console.log(_update.pigs);
             Array.prototype.map.call(_update.pigs, (elem, ind)=>{
                 let pigSort = null, priceTime = 1, currectWeight = 10;
                 if(elem.sort == "lower"){
@@ -178,41 +187,44 @@ Pig.prototype = {
                 _update.pigs[ind].weight = _update.pigs[ind].feed + Math.ceil(Number((Math.round((new Date().getTime()/1000)-elem.buyDate.seconds)/3600).toFixed(1)/24));
                 _update.pigs[ind].price = Math.round((priceTime*(_update.pigs[ind].weight)*10));
                 pig.db.collection('users').doc(docID)
-                .update(_update);
-                _eachBadge = `
-                    <div class="pigBadge">
-                        <div class="imgWrap">
-                            <img src="./img/${pigSort}">
+                .update(_update).then(_=> {
+
+                    _eachBadge = `
+                        <div class="pigBadge">
+                            <div class="imgWrap">
+                                <img src="./img/${pigSort}">
+                            </div>
+                            <div class="healty_hungry">
+                                <label>Healty</label>
+                                <p class="healty">
+                                    <span class="progress">
+                                        <span class="active" style="width:${elem.healty}%"></span>    
+                                    </span>
+                                    <span class="prozent_healty">${elem.healty.toFixed(1)}%</span>
+                                </p>
+                                <label>Hungry</label>
+                                <p class="hungry">
+                                    <span class="progress">
+                                        <span class="active" style="width:${elem.hungryLevel}%"></span>
+                                    </span>
+                                    <span class="prozent_hungry">${elem.hungryLevel.toFixed(1)}%</span>
+                                </p>
+                            </div>
+                            <div class="priceWrap">
+                                <p>
+                                    <label>Weight:</label>
+                                    <span class="priceValue">${elem.weight}kg</span>
+                                </p>
+                                <p>
+                                    <label>Price:</label>
+                                    <span class="priceValue">${elem.price}$</span>
+                                </p>
+                            </div>
                         </div>
-                        <div class="healty_hungry">
-                            <label>Healty</label>
-                            <p class="healty">
-                                <span class="progress">
-                                    <span class="active" style="width:${elem.healty}%"></span>    
-                                </span>
-                                <span class="prozent_healty">${elem.healty.toFixed(1)}%</span>
-                            </p>
-                            <label>Hungry</label>
-                            <p class="hungry">
-                                <span class="progress">
-                                    <span class="active" style="width:${elem.hungryLevel}%"></span>
-                                </span>
-                                <span class="prozent_hungry">${elem.hungryLevel.toFixed(1)}%</span>
-                            </p>
-                        </div>
-                        <div class="priceWrap">
-                            <p>
-                                <label>Weight:</label>
-                                <span class="priceValue">${elem.weight}kg</span>
-                            </p>
-                            <p>
-                                <label>Price:</label>
-                                <span class="priceValue">${elem.price}$</span>
-                            </p>
-                        </div>
-                    </div>
-                `;
-                _indivChild.innerHTML += _eachBadge;
+                    `;
+                    _indivChild.innerHTML += _eachBadge;
+
+                });
             })
         });
         _indiv.appendChild(_indivChild)
@@ -365,6 +377,7 @@ Pig.prototype = {
                     `;
                     
                     document.querySelector('.userWrap img').onclick = () => {
+                        pig.allowIndividualFarmOpen = true;
                         if(document.querySelector(".individual")){
                             document.querySelector(".individual").remove()
                         }
@@ -511,10 +524,11 @@ Pig.prototype = {
                             }
                         }
                         pig.db.collection('users').doc(docData.id)
-                        .update(_update);
-                        document.querySelector('.coinCount').innerText = _update.coin+"$";
-                        document.querySelector('.pigCount').innerText = _update.pigs.length;
-                        
+                        .update(_update).then(_ => {
+                            document.querySelector('.coinCount').innerText = _update.coin+"$";
+                            document.querySelector('.pigCount').innerText = _update.pigs.length;
+                        });
+
                         
                     }
                 })
@@ -560,45 +574,46 @@ Pig.prototype = {
                 //         Math.ceil(Number((Math.round((new Date().getTime()/1000)-elem.buyDate.seconds)/3600).toFixed(1)/24)))));
                 _update.pigs[ind].price = Math.round((priceTime*(_update.pigs[ind].weight)*10));
                 pig.db.collection('users').doc(docData.id)
-                .update(_update);
-                _eachBadge = `
-                    <div class="pigBadge">
-                        <div class="imgWrap">
-                            <img src="./img/${pigSort}">
+                .update(_update).then(_ => {
+                    _eachBadge = `
+                        <div class="pigBadge">
+                            <div class="imgWrap">
+                                <img src="./img/${pigSort}">
+                            </div>
+                            <div class="healty_hungry">
+                                <label>Healty</label>
+                                <p class="healty">
+                                    <span class="progress">
+                                        <span class="active" style="width:${elem.healty}%"></span>    
+                                    </span>
+                                    <span class="prozent_healty">${elem.healty.toFixed(1)}%</span>
+                                </p>
+                                <label>Hungry</label>
+                                <p class="hungry">
+                                    <span class="progress">
+                                        <span class="active" style="width:${elem.hungryLevel}%"></span>
+                                    </span>
+                                    <span class="prozent_hungry">${elem.hungryLevel.toFixed(1)}%</span>
+                                </p>
+                            </div>
+                            <div class="priceWrap">
+                                <p>
+                                    <label>Weight:</label>
+                                    <span class="priceValue">${elem.weight}kg</span>
+                                </p>
+                                <p>
+                                    <label>Price:</label>
+                                    <span class="priceValue">${elem.price}$</span>
+                                </p>
+                                <p>
+                                    <a href="javascript:void(0)" class="sell">Sell</a>
+                                    <a href="javascript:void(0)" class="feed">Feed</a>
+                                </p>
+                            </div>
                         </div>
-                        <div class="healty_hungry">
-                            <label>Healty</label>
-                            <p class="healty">
-                                <span class="progress">
-                                    <span class="active" style="width:${elem.healty}%"></span>    
-                                </span>
-                                <span class="prozent_healty">${elem.healty.toFixed(1)}%</span>
-                            </p>
-                            <label>Hungry</label>
-                            <p class="hungry">
-                                <span class="progress">
-                                    <span class="active" style="width:${elem.hungryLevel}%"></span>
-                                </span>
-                                <span class="prozent_hungry">${elem.hungryLevel.toFixed(1)}%</span>
-                            </p>
-                        </div>
-                        <div class="priceWrap">
-                            <p>
-                                <label>Weight:</label>
-                                <span class="priceValue">${elem.weight}kg</span>
-                            </p>
-                            <p>
-                                <label>Price:</label>
-                                <span class="priceValue">${elem.price}$</span>
-                            </p>
-                            <p>
-                                <a href="javascript:void(0)" class="sell">Sell</a>
-                                <a href="javascript:void(0)" class="feed">Feed</a>
-                            </p>
-                        </div>
-                    </div>
-                `;
-                _myFarm.innerHTML += _eachBadge;
+                    `;
+                    _myFarm.innerHTML += _eachBadge;
+                });
             })
             Array.from(document.querySelectorAll('.feed'), (element, ind)=>{
                 element.onclick = () => {
@@ -607,11 +622,12 @@ Pig.prototype = {
                     _update.pigs[ind].buyDate.seconds = Math.round(new Date().getTime()/1000);
                     _update.pigs[ind].feed = _update.pigs[ind].weight;
                     pig.db.collection('users').doc(docData.id)
-                    .update(_update);
-                    document.querySelectorAll('.healty .progress .active')[ind].style.width = _update.pigs[ind].healty+"%";
-                    document.querySelectorAll('.healty  .prozent_healty')[ind].innerText = _update.pigs[ind].healty+"%";
-                    document.querySelectorAll('.hungry .progress .active')[ind].style.width = _update.pigs[ind].hungryLevel+"%";
-                    document.querySelectorAll('.hungry .prozent_hungry')[ind].innerText = _update.pigs[ind].hungryLevel+"%";
+                    .update(_update).then(_ => {
+                        document.querySelectorAll('.healty .progress .active')[ind].style.width = _update.pigs[ind].healty+"%";
+                        document.querySelectorAll('.healty  .prozent_healty')[ind].innerText = _update.pigs[ind].healty+"%";
+                        document.querySelectorAll('.hungry .progress .active')[ind].style.width = _update.pigs[ind].hungryLevel+"%";
+                        document.querySelectorAll('.hungry .prozent_hungry')[ind].innerText = _update.pigs[ind].hungryLevel+"%";
+                    });
                 }
             })
             Array.from(document.querySelectorAll('.sell'), (element, ind)=>{
@@ -620,11 +636,13 @@ Pig.prototype = {
                     _update.coin += _update.pigs[index].price; 
                     _update.pigs.splice(index,1)
                     pig.db.collection('users').doc(docData.id)
-                    .update(_update);
-                    document.querySelector('.coinCount').innerText = _update.coin+"$";
-                    document.querySelector('.pigCount').innerText = _update.pigs.length;
-                    document.querySelectorAll('.pigBadge')[index].remove();
-                    document.querySelectorAll('.myPlace img')[index].remove();
+                    .update(_update).then(_ => {
+
+                        document.querySelector('.coinCount').innerText = _update.coin+"$";
+                        document.querySelector('.pigCount').innerText = _update.pigs.length;
+                        document.querySelectorAll('.pigBadge')[index].remove();
+                        document.querySelectorAll('.myPlace img')[index].remove();
+                    });
                 }
             })
         });
