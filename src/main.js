@@ -166,7 +166,6 @@ Pig.prototype = {
                 <span>${_update.fullName}</span>
             `
             _indivChild.appendChild(user);
-            console.log(_update.pigs);
             Array.prototype.map.call(_update.pigs, (elem, ind)=>{
                 let pigSort = null, priceTime = 1, currectWeight = 10;
                 if(elem.sort == "lower"){

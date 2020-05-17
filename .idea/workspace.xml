@@ -18,8 +18,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="265">
-              <caret line="61" column="51" lean-forward="true" selection-start-line="61" selection-start-column="51" selection-end-line="61" selection-end-column="51" />
+            <state relative-caret-position="131">
+              <caret line="710" column="51" selection-start-line="710" selection-start-column="51" selection-end-line="710" selection-end-column="51" />
               <folding>
                 <element signature="n#style#0;n#span#0;n#span#0;n#p#1;n#div#1;n#div#0;n#!!top" expanded="true" />
                 <element signature="e#10736#11723#0" />
@@ -48,6 +48,7 @@
       <find>&lt;</find>
       <find>__intervalChanges</find>
       <find>.update</find>
+      <find>console</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -101,6 +102,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
@@ -128,23 +130,23 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1589745427248</updated>
-      <workItem from="1589745429441" duration="3068000" />
+      <workItem from="1589745429441" duration="3189000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="3068000" />
+    <option name="totallyTimeSpent" value="3189000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Favorites" side_tool="true" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24983476" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24983476" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Docker" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" />
-      <window_info anchor="bottom" id="Terminal" />
+      <window_info active="true" anchor="bottom" id="Terminal" visible="true" weight="0.3286119" />
       <window_info anchor="bottom" id="Event Log" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
@@ -167,8 +169,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="265">
-          <caret line="61" column="51" lean-forward="true" selection-start-line="61" selection-start-column="51" selection-end-line="61" selection-end-column="51" />
+        <state relative-caret-position="131">
+          <caret line="710" column="51" selection-start-line="710" selection-start-column="51" selection-end-line="710" selection-end-column="51" />
           <folding>
             <element signature="n#style#0;n#span#0;n#span#0;n#p#1;n#div#1;n#div#0;n#!!top" expanded="true" />
             <element signature="e#10736#11723#0" />
