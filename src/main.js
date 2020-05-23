@@ -61,10 +61,10 @@ Pig.prototype = {
                             priceTime*= 3;
                             pigSort = "bigPig.png";
                         }
-                        _update.pigs[id].price = Math.round((priceTime*(_update.pigs[id].weight)*10)*_update.pigs[id].healty/100);
+                        _update.pigs[id]?.price = Math.round((priceTime*(_update.pigs[id].weight)*10)*_update.pigs[id].healty/100);
                         pig.db.collection('users').doc(doc.id)
                         .update(_update).then(_ => {
-                            if(_update.pigs[id].hungryLevel < 0){
+                            if(_update.pigs[id]?.hungryLevel < 0){
                                 _update.pigs.splice(id, 1);
                                 pig.db.collection('users').doc(doc.id)
                                 .update(_update).then(()=>{
@@ -107,7 +107,7 @@ Pig.prototype = {
                     let img = document.createElement("img");
                     img.setAttribute('data-size', doc.data().pigs[i].sort)
                     img.src = './img/pigs.gif';
-                    if(doc.data().pigs[i].healty < 0){
+                    if(doc.data().pigs[i]?.healty < 0){
                         let _update = null;
                         pig.db.collection('users').doc(doc.id).get().then((query)=>_update = query.data()).then(function(){
                             _update.pigs.splice(i, 1);
